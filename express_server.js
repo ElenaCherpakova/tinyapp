@@ -28,7 +28,7 @@ const {
   checkEmailAndPass,
 } = require("./helpers");
 
-//Database for the users
+// Users Dataase
 const users = {
   userRandomID: {
     id: "userRandomID",
@@ -55,7 +55,7 @@ const urlDatabase = {
 
 /*ROUTING*/
 
-//GET - Root
+//Root-GET
 app.get("/", (req, res) => {
   const user_id = req.session["user_id"];
   if (user_id) {
@@ -220,7 +220,6 @@ app.post("/register", (req, res) => {
 app.post("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   urlDatabase[shortURL].longURL = req.body.updatedURL;
-  console.log("hellog", req.body.updatedURL);
   res.redirect("/urls/");
 });
 
