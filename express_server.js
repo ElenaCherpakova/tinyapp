@@ -55,7 +55,7 @@ const urlDatabase = {
 
 /*ROUTING*/
 
-//Root-GET
+//GET - Root
 app.get("/", (req, res) => {
   const user_id = req.session["user_id"];
   if (user_id) {
