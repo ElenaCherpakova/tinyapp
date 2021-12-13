@@ -4,29 +4,22 @@ const generateRandomString = function () {
   return Math.random().toString(36).substr(2, 6);
 };
 
+//Match the given e-mail with the records
 const getUserByEmail = function (email, userDataBase) {
-  for (const user in userDataBase) {
-    if (userDataBase[user].email === email) {
-      return userDataBase[user];
+  for (const userID in userDataBase) {
+    const user = userDataBase[userID];
+    if (user.email === email) {
+      return user;
     }
   }
   return null;
 };
 
-const urslForUser = (urlDatabase, id) => {
-  return Object.fromEntries(
-    Object.entries(urlDatabase).filter((url) => url[1].userID === id)
-  );
-};
-
+//check email and password combination of a user
 const checkEmailAndPass = function (email, password, userDataBase) {
-  for (const user in userDataBase) {
-    if (
-      userDataBase[user].email === email &&
-      bcrypt.compareSync(password, userDataBase[user].password)
-    ) {
-      return true;
-    }
+  const user = getUserByEmail(email, userDataBase);
+  if (user && bcrypt.compareSync(password, user.password)) {
+    return user;
   }
   return false;
 };
@@ -34,6 +27,5 @@ const checkEmailAndPass = function (email, password, userDataBase) {
 module.exports = {
   generateRandomString,
   getUserByEmail,
-  urslForUser,
   checkEmailAndPass,
 };

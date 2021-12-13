@@ -3,7 +3,6 @@ const { assert } = require("chai");
 const {
   generateRandomString,
   getUserByEmail,
-  urslForUser,
   checkEmailAndPass,
 } = require("../helpers.js");
 
