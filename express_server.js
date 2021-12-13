@@ -27,7 +27,7 @@ const {
   getUserByEmail,
   checkEmailAndPass,
 } = require("./helpers");
- 
+
 //Database for the users
 const users = {
   userRandomID: {
