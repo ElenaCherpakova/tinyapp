@@ -4,11 +4,6 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-
-*Main Page*
-
-!["Main Page"](https://github.com/ElenaCherpakova/tinyapp/blob/2d1727c91d898d11c0b2a7f0b0f9f1a6471b44ba/docs/page01.png)
-
 *Main page*
 
 !["Main page without an active user"](https://github.com/ElenaCherpakova/tinyapp/blob/2d1727c91d898d11c0b2a7f0b0f9f1a6471b44ba/docs/page01.png)
