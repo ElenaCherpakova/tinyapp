@@ -224,7 +224,6 @@ app.post("/urls/:shortURL", (req, res) => {
   const shortUrl = req.params.shortURL;
   if (userId && urlDatabase[shortUrl].userID === userId) {
     const longUrl = req.body.updatedURL;
-    console.log("REG BODY", req.body);
     urlDatabase[shortUrl].longURL = longUrl;
     return res.redirect("/urls");
   }
