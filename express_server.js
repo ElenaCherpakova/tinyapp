@@ -26,6 +26,7 @@ const {
   generateRandomString,
   getUserByEmail,
   checkEmailAndPass,
+  urlsForUser,
 } = require("./helpers");
 
 // Users Dataase
@@ -65,18 +66,17 @@ app.get("/", (req, res) => {
   }
 });
 
-// GET - urls Index Page
 app.get("/urls", (req, res) => {
-  const user_id = req.session["user_id"];
-  const user = users[user_id];
-  const urls = {};
-  for (const url in urlDatabase) {
-    if (user_id === urlDatabase[url].userID) {
-      urls[url] = urlDatabase[url].longURL;
-    }
+  const userId = req.session.user_id;
+  if (userId) {
+    const urlUserObject = urlsForUser(userId, urlDatabase);
+    const templateVars = {
+      urls: urlUserObject,
+      user: users[req.session.user_id],
+    };
+    return res.render("urls_index", templateVars);
   }
-  const templateVars = { urls: urls, user: user };
-  res.render("urls_index", templateVars);
+  res.redirect("/login");
 });
 
 //GET - Generate a new short URL from a long URL
@@ -95,6 +95,10 @@ app.get("/login", (req, res) => {
   const templateVars = {
     user: users[req.session["user_id"]],
   };
+  const user_id = req.session["user_id"];
+  if (user_id) {
+    res.redirect("/urls");
+  }
   res.render("login", templateVars);
 });
 
@@ -129,6 +133,10 @@ app.get("/register", (req, res) => {
   const templateVars = {
     user: users[req.session["user_id"]],
   };
+  const user_id = req.session["user_id"];
+  if (user_id) {
+    res.redirect("/urls");
+  }
   res.render("register", templateVars);
 });
 
@@ -147,13 +155,9 @@ app.get("/fetch", (req, res) => {
 
 //POST - handles user input form submission
 app.post("/urls", (req, res) => {
-  if (!req.session.user_id) {
-    return res.status(404).send("Need to Login to create/modify a TinyAppURL");
-  }
-  const userID = req.session["user_id"];
+  const userID = req.session.user_id;
   const shortURL = generateRandomString();
   const longURL = req.body.longURL;
-  // console.log(req.body);
   urlDatabase[shortURL] = { longURL, userID };
   res.redirect(`/urls/${shortURL}`);
 });
@@ -183,7 +187,7 @@ app.post("/login", (req, res) => {
 //POST - Handles users Logout
 app.post("/logout", (req, res) => {
   req.session = null;
-  res.redirect("/login");
+  res.redirect("/urls");
 });
 
 //POST - Validate the registration, forward user to list of urls
@@ -215,11 +219,16 @@ app.post("/register", (req, res) => {
   res.redirect("/urls");
 });
 
-//POST - Short url page where user can edit long URLs
 app.post("/urls/:shortURL", (req, res) => {
-  const shortURL = req.params.shortURL;
-  urlDatabase[shortURL].longURL = req.body.updatedURL;
-  res.redirect("/urls/");
+  const userId = req.session.user_id;
+  const shortUrl = req.params.shortURL;
+  if (userId && urlDatabase[shortUrl].userID === userId) {
+    const longUrl = req.body.updatedURL;
+    console.log("REG BODY", req.body);
+    urlDatabase[shortUrl].longURL = longUrl;
+    return res.redirect("/urls");
+  }
+  res.status(401).send("Not allowed to access this shortURL.");
 });
 
 //POST - Delete a link off url list
@@ -232,7 +241,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
       res.redirect("/urls/");
     }
   }
-  res.send("<h4>You are not autorized to delete it</h4>");
+  res.status(401).send("<h4>You are not autorized to delete it</h4>");
 });
 
 // Server listen

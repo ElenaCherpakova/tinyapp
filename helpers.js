@@ -15,6 +15,17 @@ const getUserByEmail = (email, userDataBase) => {
   return null;
 };
 
+//check urls for users
+const urlsForUser = function(userid, urlDatabase) {
+  const newObjectDatabase = {};
+  for (let obj in urlDatabase) {
+    if (urlDatabase[obj].userID === userid) {
+      newObjectDatabase[obj] = urlDatabase[obj];
+    }
+  }
+  return newObjectDatabase;
+};
+
 //check email and password combination of a user
 const checkEmailAndPass = (email, password, userDataBase) => {
   const user = getUserByEmail(email, userDataBase);
@@ -25,6 +36,7 @@ const checkEmailAndPass = (email, password, userDataBase) => {
 };
 
 module.exports = {
+  urlsForUser,
   generateRandomString,
   getUserByEmail,
   checkEmailAndPass,
