@@ -102,24 +102,21 @@ app.get("/login", (req, res) => {
   res.render("login", templateVars);
 });
 
-//GET - Short url page where you can edit long URLs
+//GET - request to display /urls/shortURL page
 app.get("/urls/:shortURL", (req, res) => {
-  const user_id = req.session["user_id"];
-  const user = users[user_id];
-  const { longURL } = urlDatabase[req.params.shortURL] || {};
-  if (!longURL) {
-    return res
-      .status(404)
-      .send(
-        `<h1 style="text-align: center; color:red">Error: 404 Page is not found</h1>`
-      );
+  const userId = req.session.user_id;
+  const shorturl = req.params.shortURL;
+  if (userId && urlDatabase[shorturl].userID === userId) {
+    const longurl = urlDatabase[shorturl].longURL;
+    const templateVars = {
+      shortURL: shorturl,
+      longURL: longurl,
+      user: users[req.session.user_id],
+    };
+    res.render("urls_show", templateVars);
+  } else {
+    res.send("You are not allowed to access this page.");
   }
-  const templateVars = {
-    shortURL: req.params.shortURL,
-    longURL,
-    user: user,
-  };
-  res.render("urls_show", templateVars);
 });
 
 //GET - redirecting to the Long URL
